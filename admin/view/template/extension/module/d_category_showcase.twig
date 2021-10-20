@@ -1,0 +1,226 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-category_showcase" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+        <h1>{{ heading_title }}</h1>
+       <ul class="breadcrumb">
+          {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+          {% endfor %}
+        </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+          {% if setup %}
+            <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-category_showcase" class="form-horizontal">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+                <div class="col-sm-10">
+                  <select name="module_d_category_showcase_status" id="input-status" class="form-control">
+                    {% if status %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-status">Wall name</label>
+                <div class="col-sm-10">
+                  <input name="d_category_showcase_name" type="text" class="form-control" value="{{ name }}">                  
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="{{ help_category }}">{{ entry_category }}</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="category" value="" placeholder="{{ entry_category }}" id="input-category" class="form-control" />
+                  <div id="product-category" class="well well-sm" style="height: 150px; overflow: auto;"> 
+                    {% for product_category in product_categories %}
+                      <div id="product-category{{ product_category.category_id }}"><i class="fa fa-minus-circle"></i> {{ product_category.name }}
+                        <input type="hidden" name="product_category[]" value="{{ product_category.category_id }}" />
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </form>
+          {% else %}
+           <style>
+                .welcome {
+                    background: url("view/image/d_category_showcase/bg.svg");
+                    background-position: bottom;
+                    background-repeat: repeat-x;
+                    background-size: 50%;
+                    min-height: 700px;
+                    padding-top: 50px;
+                    padding-bottom: 200px;
+                }
+
+                .welcome-into {
+                    text-align: center;
+                    max-width: 500px;
+                    margin: auto;
+                }
+
+                .welcome-into-logo {
+                    padding-bottom: 15px;
+                }
+
+                .welcome-into-heading {
+                    font-size: 30px;
+                    font-weight: bold;
+                    padding-bottom: 15px;
+                }
+
+                .welcome-into-text {
+                    font-size: 18px;
+                    padding-bottom: 30px;
+                }
+
+                .welcome-into-start {
+                    padding-bottom: 30px;
+                }
+
+                .welcome-features {
+                    padding: 30px;
+                }
+
+                .welcome-features-icon {
+                    padding: 20px;
+                    height: 130px;
+                    text-align: center;
+                }
+
+                .welcome-features-text {
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: 16px;
+                }
+
+                .panel .panel-body {
+                    padding: 0px;
+                }
+            </style>
+            <div class="welcome" style="padding-bottom: 250px;">
+                <div class="welcome-into">
+                    <div class="welcome-into-logo"><img src="view/image/d_category_showcase/logo.svg"/></div>
+                    <div class="welcome-into-heading">Category showcase</div>
+                    <div class="welcome-into-text">Opencart has an option to connect products as "related". This extension checks the products that have been added to the cart and displays their related products. It is a perfect cross seller allowing you to increase the average check.
+                    </div>
+
+                    <div class="welcome-into-start">
+                        <a class="btn btn-primary btn-lg setup">Setup</a>
+                    </div>                
+                </div>
+            </div>
+
+          {% endif %}        
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $("#form-category_showcase").on("submit", function(e){
+    //console.log($(this).serialize());
+   // e.preventDefault();
+  });
+</script>
+<script type="text/javascript">
+        $('body').on('click', '#save_and_stay', function() {
+
+            $.ajax(
+                {
+                    type: 'post',
+                    url: '{{save_and_stay}}',
+                    data: $('#form').serialize(),
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#content').fadeTo('slow', 0.5);
+                    },
+                    complete: function() {
+                        $('#content').fadeTo('slow', 1);
+                    },
+                    success: function(json) {
+                        alert_handler(json);
+
+                        if(json['current_url']) {
+                            window.history.pushState({}, "", json['current_url']);
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+        });
+
+
+        $(document).on('click', '.setup', function () {
+           window.location.href = '{{ setup_link }}';
+        })
+        //checkbox
+        $(".switcher[type='checkbox']").bootstrapSwitch({
+            'onColor': 'success',
+            'onText': '{{ text_yes }}',
+            'offText': '{{ text_no }}',
+            'onSwitchChange': function (event, state) {
+                if (event.target.name == 'setting[limit_block]' && state == true) {
+                    $('.switcher[name=\'setting[limit_height]\']').bootstrapSwitch({'state': 'false'});
+                }
+                if (event.target.name == 'setting[limit_height]' && state == true) {
+                    $('.switcher[name=\'setting[limit_height]\']').bootstrapSwitch({'state': 'false'});
+                }
+            }
+        });
+
+        $(document).on('click', '.setup', function () {
+            window.location.href = '{{ setup_link }}';
+        })
+    </script>
+    <script>
+     // Category
+      $('input[name=\'category\']').autocomplete({
+        'source': function(request, response) {
+          $.ajax({
+            url: '{{ category_url }}&filter_name=' +  encodeURIComponent(request),
+            dataType: 'json',
+            success: function(json) {
+              response($.map(json, function(item) {
+                return {
+                  label: item['name'],
+                  value: item['category_id']
+                }
+              }));
+            }
+          });
+        },
+        'select': function(item) {
+          $('input[name=\'category\']').val('');
+
+          $('#product-category' + item['value']).remove();
+
+          $('#product-category').append('<div id="product-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="product_category[]" value="' + item['value'] + '" /></div>');
+        }
+      });
+
+      $('#product-category').delegate('.fa-minus-circle', 'click', function() {
+        $(this).parent().remove();
+      });
+    </script>
+{{ footer }}

@@ -1,0 +1,39 @@
+<style>
+.caption h3 {
+    margin: 0;
+}
+.d_sub-category .caption {
+    padding: 0 20px;
+    min-height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</style>
+
+<style>
+{{ custom_styles }}
+</style>
+<div class="row" style="opacity: 1; display: block;margin-bottom: 0px;">
+    {% for category in children_data %}
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="product-thumb transition d_sub-category">
+                {% if show_images %}
+                    <div class="image">
+                        <a href="{{ category.href }}">                        
+                            <img src="{{ category.image }}" alt="{{ category.name }}" title="{{ category.name }}" class="img-responsive" />
+                        </a>
+                    </div>
+                {% endif %}
+                <div class="caption" style="min-height: 50px">
+                    <h3>
+                        <a style="text-decoration: none" href="{{ category.href }}">
+                          {{ category.name }}
+                          {% if count_products %} {{ category.count_products }} {% endif %}                        
+                        </a>
+                    </h3>
+                </div> 
+            </div>
+        </div>
+    {% endfor %} 
+</div>

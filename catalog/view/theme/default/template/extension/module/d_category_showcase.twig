@@ -1,0 +1,12 @@
+<div class="row" style="opacity: 1; display: block;margin-bottom: 0px;">
+    {% for category in categories %}
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="product-thumb transition">
+                <div class="image"><a href="{{ category.href }}"><img src="{{ category.image }}" alt="{{ category.name }}" title="{{ category.name }}" class="img-responsive" /></a></div>
+                <div class="caption" style="min-height: 50px">
+                    <h3><a style="text-decoration: none" href="{{ category.href }}">{{ category.name }}</a></h3>
+                </div> 
+            </div>
+        </div>
+    {% endfor %} 
+</div>
